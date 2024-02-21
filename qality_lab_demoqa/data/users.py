@@ -21,9 +21,9 @@ Alex = TextFormUser(
     current_city="Stavropol",
     current_street="South",
     current_house="88 b",
-    current_flat=" 12 a",
+    current_flat="12 a",
     permanent_city="Moscow",
     permanent_street="Bolshaya Sadovaya",
     permanent_house="302-bis",
-    permanent_flat=" 50",
+    permanent_flat="50",
 )

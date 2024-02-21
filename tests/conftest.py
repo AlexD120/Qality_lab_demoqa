@@ -1,4 +1,6 @@
 import os
+
+from dotenv import load_dotenv
 from selene import browser
 import pytest
 from selenium import webdriver
@@ -19,7 +21,7 @@ def browser_config(request):
     browser_version = (
         browser_version if browser_version != "" else DEFAULT_BROWSER_VERSION
     )
-    # browser.config.base_url = 'https://demoqa.com/text-box'
+    browser.config.base_url = 'https://demoqa.com'
     browser.config.window_width = 1440
     browser.config.window_height = 900
     options = Options()
@@ -32,26 +34,24 @@ def browser_config(request):
     options.add_argument("--disable-notifications")
     options.add_argument("--disable-popup-blocking")
     options.add_argument("--disable-infobars")
-    options.add_argument(
-        "--disable-notifications-prompt"
-    )  # Блокировка уведомлений в адресной строке
-    #
-    # selenoid_capabilities = {
-    #     "browserName": 'chrome',
-    #     "browserVersion": browser_version,
-    #     "selenoid:options": {"enableVNC": True, "enableVideo": True},
-    # }
-    # options.capabilities.update(selenoid_capabilities)
-    #
-    # login_selenoid = os.getenv('LOGIN')
-    # password_selenoid = os.getenv('PASSWORD')
-    #
-    # driver = webdriver.Remote(
-    #     command_executor=f"https://{login_selenoid}:{password_selenoid}@selenoid.autotests.cloud/wd/hub",
-    #     options=options,
-    # )
-    #
-    # browser.config.driver = driver
+    options.add_argument("--disable-notifications-prompt")
+
+    selenoid_capabilities = {
+        "browserName": 'chrome',
+        "browserVersion": browser_version,
+        "selenoid:options": {"enableVNC": True, "enableVideo": True},
+    }
+    options.capabilities.update(selenoid_capabilities)
+    load_dotenv()
+    login_selenoid = os.getenv('LOGIN')
+    password_selenoid = os.getenv('PASSWORD')
+
+    driver = webdriver.Remote(
+        command_executor=f"https://{login_selenoid}:{password_selenoid}@selenoid.autotests.cloud/wd/hub",
+        options=options,
+    )
+
+    browser.config.driver = driver
 
     yield browser
 

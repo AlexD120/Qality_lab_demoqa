@@ -1,7 +1,8 @@
 import allure
-from selene import browser, have, be, by
+from selene import browser, have, be
 from selene.support.shared.jquery_style import s
 from qality_lab_demoqa.data.users import TextFormUser, Alex
+from qality_lab_demoqa.helpers.skip_onboarding import skip_onboarding_question
 
 
 class SimpleShouldFormFields:
@@ -16,28 +17,32 @@ class SimpleShouldFormFields:
 
     @allure.step('Открываем страницу')
     def open(self):
-        browser.open('https://demoqa.com/text-box')
+        browser.open('/text-box')
         return self
+
+    @allure.step('Принимаем согласие')
+    def accept_the_consent(self):
+        skip_onboarding_question()
 
     @allure.step('Проверка заголовка имени формы')
     def should_title_form(self):
         self.should_title_element.should(have.text('Text Box'))
 
     @allure.step('Заполнение и отправка формы')
-    def filling_out_the_form(self, user):
-        self.full_name_user.type(user.full_name)
-        self.email_user.type(user.user_email)
-        self.current_adress_user.type(
+    def filling_out_the_form(self, user: TextFormUser):
+        self.full_name_user.should(be.visible).type(user.full_name)
+        self.email_user.should(be.visible).type(user.user_email)
+        self.current_adress_user.should(be.visible).type(
             f'{user.current_city}, {user.current_street}, {user.current_house}, {user.current_flat}'
         )
-        self.permanent_adress_user.type(
+        self.permanent_adress_user.should(be.visible).type(
             f'{user.permanent_city}, {user.permanent_street}, {user.permanent_house}, {user.permanent_flat}'
         )
         self.submit_button.press_enter()
 
     @allure.step('Проверка заполнения полей ответа формы')
     def verify_search_results_title(self, user):
-        self.output.should(
+        self.output.should(be.visible).should(
             have.exact_text(
                 f'Name:{user.full_name}\n'
                 f'Email:{user.user_email}\n'
